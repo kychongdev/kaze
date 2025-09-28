@@ -1,25 +1,17 @@
 package main
 
 import (
-	"log"
-	"os"
+	"net/http"
 
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	app := pocketbase.New()
-
-	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
-		// serves static files from the provided public dir (if exists)
-		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
-
-		return se.Next()
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome"))
 	})
-
-	if err := app.Start(); err != nil {
-		log.Fatal(err)
-	}
+	http.ListenAndServe(":3000", r)
 }
