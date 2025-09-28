@@ -1,2 +1,3 @@
-# caddy-manager
-Caddy TUI
+# Kaze
+
+Just a web UI to manage my server
