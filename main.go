@@ -1,11 +1,12 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"net/http"
 
-	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/kychongdev/kaze/api"
 )
 
 func main() {
@@ -15,12 +16,14 @@ func main() {
 	}
 	defer apiClient.Close()
 
-	containers, err := apiClient.ContainerList(context.Background(), container.ListOptions{All: true})
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+
+	dockerHandler, err := api.NewDockerHandler()
 	if err != nil {
 		panic(err)
 	}
+	r.Mount("/api/docker", dockerHandler.Routes())
 
-	for _, ctr := range containers {
-		fmt.Printf("%s %s (status: %s)\n", ctr.ID, ctr.Image, ctr.Status)
-	}
+	http.ListenAndServe(":3001", r)
 }

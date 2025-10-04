@@ -2,7 +2,10 @@ module github.com/kychongdev/kaze
 
 go 1.25.1
 
-require github.com/docker/docker v28.3.1+incompatible
+require (
+	github.com/docker/docker v28.3.1+incompatible
+	github.com/go-chi/chi/v5 v5.2.3
+)
 
 require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
